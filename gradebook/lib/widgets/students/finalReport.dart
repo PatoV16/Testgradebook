@@ -1,39 +1,56 @@
 import 'package:flutter/material.dart';
-class FinalReportDropdown extends StatelessWidget {
+
+class ReportDropdown extends StatefulWidget {
+  final Function(String) onSelected; // Función para notificar la selección
+
+  ReportDropdown({required this.onSelected});
+
+  @override
+  _ReportDropdownState createState() => _ReportDropdownState();
+}
+
+class _ReportDropdownState extends State<ReportDropdown> {
+  String? selectedOption; 
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('SELECCIONE', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+        Text(
+          'SELECCIONE',
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+        ),
         SizedBox(height: 4),
         Container(
-          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[400]!),
+            border: Border.all(color: const Color.fromARGB(255, 255, 149, 2)!),
             borderRadius: BorderRadius.circular(4),
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Gradebook', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-                    SizedBox(height: 2),
-                    Text('Reporte Final', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                Icon(Icons.arrow_drop_down, color: Colors.grey),
-              ],
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: selectedOption,
+              hint: Text("Seleccione una opción"),
+              icon: Icon(Icons.arrow_drop_down, color: Colors.grey),
+              isExpanded: true,
+              items: ['Reporte Final', 'Reporte por Trimestre'].map((String option) {
+                return DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(option, style: TextStyle(fontWeight: FontWeight.bold)),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  setState(() {
+                    selectedOption = newValue;
+                  });
+                  widget.onSelected(newValue);
+                }
+              },
             ),
           ),
         ),
-        SizedBox(height: 16),
-        Text('Materias Tradicionales', style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(height: 8),
       ],
     );
   }

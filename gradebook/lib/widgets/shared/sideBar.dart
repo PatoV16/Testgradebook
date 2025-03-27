@@ -14,6 +14,8 @@ class _ExpandableSidebarState extends State<ExpandableSidebar> {
   double _sidebarWidth = 70;
   bool _isExpanded = false;
 
+  String selectedItem = ''; // Variable para almacenar la opción seleccionada
+
   final Map<String, Color> _itemColors = {
     'Integrador': Color(0xFFFFA726),
     'Asistencia': Color(0xFFE65100),
@@ -62,45 +64,75 @@ class _ExpandableSidebarState extends State<ExpandableSidebar> {
   }
 
   Widget _buildSidebarItem(IconData icon, String title, String key) {
-    final itemColor = _itemColors[title] ?? Colors.grey;
+  final itemColor = _itemColors[title] ?? Colors.grey;
+  bool isSelected = selectedItem == key;
 
-    return GestureDetector(
-      onTap: () {
-        _onItemSelected(key); // Llamar a onItemSelected cuando el ítem sea tocado
-      },
-      child: Container(
-        width: double.infinity,
-        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        decoration: BoxDecoration(
-          color: itemColor,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 8),
-            Icon(icon, color: Colors.white, size: 28),
-            if (_isExpanded)
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            SizedBox(height: 8),
-          ],
-        ),
+  return GestureDetector(
+    onTap: () {
+      _onItemSelected(key);
+    },
+    child: Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.blueAccent.withOpacity(0.9) : itemColor,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: isSelected ? [
+          BoxShadow(
+            color: Colors.blueAccent.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          )
+        ] : [],
+        border: isSelected ? Border.all(
+          color: Colors.white,
+          width: 2,
+        ) : null,
       ),
-    );
-  }
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: 8),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(icon, color: Colors.white, size: 28),
+              if (isSelected && !_isExpanded)
+                Positioned(
+                  right: 8,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          if (_isExpanded)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          SizedBox(height: 8),
+        ],
+      ),
+    ),
+  );
+}
 
   void _expandSidebar() {
     setState(() {
@@ -117,35 +149,36 @@ class _ExpandableSidebarState extends State<ExpandableSidebar> {
   }
 
   void _onItemSelected(String key) {
-  Widget page = Center(child: Text('Página no encontrada')); // Valor predeterminado
+    Widget page = Center(child: Text('Página no encontrada')); // Valor predeterminado
 
-  // Crear las páginas según el ítem seleccionado
-  switch (key) {
-    case 'Integrador':
-      //page = StudentMainContent();
-      break;
-    case 'Asistencia':
-      // page = AsistenciaPage();
-      break;
-    case 'Classroom':
-      // page = ClassroomPage();
-      break;
-    case 'Course Builder':
-      // page = CourseBuilderPage();
-      break;
-    case 'Calificaciones':
-       page = StudentMainContent();;
-      break;
-    case 'Matriculación':
-      // page = MatriculacionPage();
-      break;
-    case 'Grade Books':
-      // page = GradeBooksPage();
-      break;
-    // Si no se selecciona ningún ítem válido, mantendrá el valor predeterminado
+    setState(() {
+      selectedItem = key; 
+    });
+
+    switch (key) {
+      case 'Integrador':
+        //page = StudentMainContent();
+        break;
+      case 'Asistencia':
+        // page = AsistenciaPage();
+        break;
+      case 'Classroom':
+        // page = ClassroomPage();
+        break;
+      case 'Course Builder':
+        // page = CourseBuilderPage();
+        break;
+      case 'Calificaciones':
+         page = StudentMainContent();
+        break;
+      case 'Matriculación':
+        // page = MatriculacionPage();
+        break;
+      case 'Grade Books':
+        // page = GradeBooksPage();
+        break;
+    }
+
+    widget.onItemSelected(page); 
   }
-
-  widget.onItemSelected(page); // Pasar la página seleccionada a la función externa
-}
-
 }
