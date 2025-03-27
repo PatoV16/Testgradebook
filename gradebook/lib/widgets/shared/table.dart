@@ -60,35 +60,25 @@ class GradebookTable extends StatelessWidget {
     );
   }
 
-  TableRow _buildSubjectRow(String subject, List<String> values) {
-    return TableRow(
-      children: [
-        _buildTableCell(subject, isBold: true, textAlign: TextAlign.left, backgroundColor: Colors.white),
-        for (var i = 0; i < values.length; i++)
-          _buildTableCell(values[i], textColor: i == 4 ? Colors.red : Colors.black, backgroundColor: Colors.white),
-      ],
-    );
-  }
-
   TableRow _buildTableFooter() {
     return TableRow(
       decoration: BoxDecoration(color: Colors.red.shade100),
       children: [
-        _buildTableCell('', isBold: true, backgroundColor: Colors.white),
-        _buildTableCell('10', isBold: true, backgroundColor: Colors.white),
-        _buildTableCell('10', isBold: true, backgroundColor: Colors.white),
-        _buildTableCell('10', isBold: true, backgroundColor: Colors.white),
-        _buildTableCell('PROMEDIO GENERAL', isBold: true, textColor: Colors.red, backgroundColor: Colors.white),
-        _buildTableCell('10', isBold: true, backgroundColor: Colors.white),
+        _buildTableCell('', isBold: true, backgroundColor: Colors.white, borderColor: Colors.blue),
+        _buildTableCell('10', isBold: true, backgroundColor: Colors.white, borderColor: Colors.green),
+        _buildTableCell('10', isBold: true, backgroundColor: Colors.white, borderColor: Colors.green),
+        _buildTableCell('10', isBold: true, backgroundColor: Colors.white, borderColor: Colors.green),
+        _buildTableCell('PROMEDIO GENERAL', isBold: true, textColor: Colors.red, backgroundColor: Colors.white, borderColor: Colors.orange),
+        _buildTableCell('10', isBold: true, backgroundColor: Colors.white, borderColor: Colors.red),
       ],
     );
   }
 
   Widget _buildHeaderCell(String text, Color borderColor) {
-    return IntrinsicWidth( 
-      child: IntrinsicHeight( 
+    return IntrinsicWidth(
+      child: IntrinsicHeight(
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), // Padding reducido
+          padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: borderColor, width: 2),
@@ -104,13 +94,26 @@ class GradebookTable extends StatelessWidget {
     );
   }
 
-  Widget _buildTableCell(String text, {bool isBold = false, Color? textColor, TextAlign textAlign = TextAlign.center, Color backgroundColor = Colors.white}) {
+  Widget _buildTableCell(
+    String text, {
+    bool isBold = false,
+    Color? textColor,
+    TextAlign textAlign = TextAlign.center,
+    Color backgroundColor = Colors.white,
+    bool isFirstCell = false,
+    Color borderColor = Colors.grey,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
       decoration: BoxDecoration(
         color: backgroundColor,
-        border: Border.all(color: Colors.grey.shade300, width: 5),
-        borderRadius: BorderRadius.circular(10),
+        border: Border(
+          right: BorderSide(color: Colors.grey.shade300, width: 1),
+          left: BorderSide(color: borderColor, width: 4),
+          top: BorderSide(color: Colors.grey.shade300, width: 10),
+          bottom: BorderSide(color: Colors.grey.shade300, width: 10),
+        ),
+        
       ),
       child: Text(
         text,
@@ -121,6 +124,46 @@ class GradebookTable extends StatelessWidget {
           fontSize: 12,
         ),
       ),
+    );
+  }
+
+  TableRow _buildSubjectRow(String subject, List<String> values) {
+    return TableRow(
+      children: [
+        _buildTableCell(
+          subject,
+          isBold: true,
+          textAlign: TextAlign.left,
+          backgroundColor: Colors.white,
+          borderColor: Colors.blue,
+        ),
+        _buildTableCell(
+          values[0],
+          backgroundColor: Colors.white,
+          borderColor: Colors.green,
+        ),
+        _buildTableCell(
+          values[1],
+          backgroundColor: Colors.white,
+          borderColor: Colors.green,
+        ),
+        _buildTableCell(
+          values[2],
+          backgroundColor: Colors.white,
+          borderColor: Colors.green,
+        ),
+        _buildTableCell(
+          values[3],
+          backgroundColor: Colors.white,
+          borderColor: Colors.orange,
+        ),
+        _buildTableCell(
+          values[4],
+          textColor: Colors.red,
+          backgroundColor: Colors.white,
+          borderColor: Colors.red,
+        ),
+      ],
     );
   }
 }
